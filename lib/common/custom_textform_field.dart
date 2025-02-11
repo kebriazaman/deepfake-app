@@ -57,7 +57,7 @@ class CustomTextFormField extends StatelessWidget {
           style: Theme.of(context).textTheme.bodyMedium!.copyWith(color: AppColors.instance.darkNavy),
           autovalidateMode: AutovalidateMode.onUserInteraction,
           decoration: kFormFieldDecoration.copyWith(
-            hintStyle: Theme.of(context).textTheme.bodyMedium!.copyWith(color: AppColors.instance.black),
+            hintStyle: Theme.of(context).textTheme.bodyMedium!.copyWith(color: AppColors.instance.darkNavy.withAlpha(80)),
             hintText: hintText,
             // suffixIcon:
             //     hintText == 'Password' || hintText == 'Create Password' || hintText == 'Confirm Password'

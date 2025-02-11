@@ -1,7 +1,9 @@
 import 'package:deepfake/common/upload_button.dart';
 import 'package:deepfake/features/analyzing_provider.dart';
 import 'package:deepfake/resources/colors/app_colors.dart';
+import 'package:deepfake/resources/routes/route_names.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:provider/provider.dart';
 import 'package:video_player/video_player.dart';
 
@@ -12,9 +14,10 @@ class HomeScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: Colors.black,
+      appBar: AppBar(automaticallyImplyLeading: true, leading: IconButton(onPressed: ()=> Navigator.pushReplacementNamed(context, RouteNames
+          .loginScreen), icon: const Icon(Icons.keyboard_arrow_left)),),
       body: Consumer<AnalyzingProvider>(
         builder: (context, provider, child) {
-
           double screenWidth = MediaQuery.of(context).size.width;
           double screenHeight = MediaQuery.of(context).size.height * 0.4;
           double aspectRatio = screenWidth / screenHeight;
@@ -23,20 +26,20 @@ class HomeScreen extends StatelessWidget {
             child: Padding(
               padding: const EdgeInsets.symmetric(horizontal: 16.0),
               child: Column(
-                mainAxisAlignment: MainAxisAlignment.center,
+                mainAxisAlignment: MainAxisAlignment.start,
                 crossAxisAlignment: CrossAxisAlignment.stretch,
                 children: [
-                  Image.asset('assets/images/intro_icon.png', width: 150, height: 150, fit: BoxFit.cover),
+                  Image.asset('assets/images/intro_icon.png', width: 150.w, height: 150.h, fit: BoxFit.cover),
                   UploadButton(onPressed: () => provider.pickVideo()),
                   const SizedBox(height: 10),
                   if (provider.isVideoSelected && provider.controller != null) ...[
                     Text(
                       'VIDEO UPLOADED:',
                       style: Theme.of(context).textTheme.bodyMedium!.copyWith(
-                        fontWeight: FontWeight.w600,
-                        overflow: TextOverflow.ellipsis,
-                        color: AppColors.instance.white.withAlpha(400),
-                      ),
+                            fontWeight: FontWeight.w600,
+                            overflow: TextOverflow.ellipsis,
+                            color: AppColors.instance.white.withAlpha(400),
+                          ),
                     ),
                     const SizedBox(height: 10),
                     GestureDetector(
@@ -44,15 +47,22 @@ class HomeScreen extends StatelessWidget {
                       child: Stack(
                         alignment: Alignment.center,
                         children: [
-                          AspectRatio(
-                            aspectRatio: aspectRatio,
+                          SizedBox(
+                            width: MediaQuery.of(context).size.width, // 100% of the screen width
+                            height: MediaQuery.of(context).size.height * 0.3, // 3% of the screen height
                             child: ClipRRect(
                               borderRadius: BorderRadius.circular(16),
-                              child: VideoPlayer(provider.controller!),
+                              child: FittedBox(
+                                fit: BoxFit.cover,  // Ensures it covers the area properly
+                                child: SizedBox(
+                                  width: provider.controller!.value.size.width,
+                                  height: provider.controller!.value.size.height,
+                                  child: VideoPlayer(provider.controller!),
+                                ),
+                              ),
                             ),
                           ),
-                          if (!provider.controller!.value.isPlaying)
-                            const Icon(Icons.play_arrow, size: 50, color: Colors.white),
+                          if (!provider.controller!.value.isPlaying) const Icon(Icons.play_arrow, size: 50, color: Colors.white),
                           // Close "X" button
                           Positioned(
                             top: 8,
@@ -110,10 +120,10 @@ class HomeScreen extends StatelessWidget {
                               child: Text(
                                 provider.selectedAction ?? "What action is the person doing?",
                                 style: Theme.of(context).textTheme.bodyMedium!.copyWith(
-                                  fontWeight: FontWeight.w500,
-                                  overflow: TextOverflow.ellipsis,
-                                  color: AppColors.instance.black.withAlpha(90),
-                                ),
+                                      fontWeight: FontWeight.w500,
+                                      overflow: TextOverflow.ellipsis,
+                                      color: AppColors.instance.black.withAlpha(90),
+                                    ),
                               ),
                             ),
                             const Icon(Icons.menu, color: Colors.black),
