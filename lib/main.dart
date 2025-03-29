@@ -1,5 +1,6 @@
-import 'package:deepfake/features/analyzing_provider.dart';
+import 'package:deepfake/features/home/controllers/analyzing_provider.dart';
 import 'package:deepfake/features/auth/controllers/auth_controller.dart';
+import 'package:deepfake/repository/analyzing_repository.dart';
 import 'package:deepfake/resources/routes/app_routes.dart';
 import 'package:deepfake/resources/theme/app_theme.dart';
 import 'package:flutter/material.dart';
@@ -16,7 +17,7 @@ class MyApp extends StatelessWidget {
     return MultiProvider(
       providers: [
         ChangeNotifierProvider(create: (_) => AuthController()),
-        ChangeNotifierProvider(create: (_) => AnalyzingProvider()),
+        ChangeNotifierProvider(create: (_) => AnalyzingProvider(AnalyzingRepository())),
       ],
       child: ScreenUtilInit(
         designSize: const Size(375, 812),

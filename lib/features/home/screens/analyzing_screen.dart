@@ -1,5 +1,5 @@
 import 'package:deepfake/common/upload_button.dart';
-import 'package:deepfake/features/analyzing_provider.dart';
+import 'package:deepfake/features/home/controllers/analyzing_provider.dart';
 import 'package:deepfake/resources/colors/app_colors.dart';
 import 'package:deepfake/resources/routes/route_names.dart';
 import 'package:flutter/material.dart';
@@ -14,22 +14,54 @@ class HomeScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: Colors.black,
-      appBar: AppBar(automaticallyImplyLeading: true, leading: IconButton(onPressed: ()=> Navigator.pushReplacementNamed(context, RouteNames
-          .loginScreen), icon: const Icon(Icons.keyboard_arrow_left)),),
-      body: Consumer<AnalyzingProvider>(
-        builder: (context, provider, child) {
-          double screenWidth = MediaQuery.of(context).size.width;
-          double screenHeight = MediaQuery.of(context).size.height * 0.4;
-          double aspectRatio = screenWidth / screenHeight;
+      appBar: AppBar(
+        automaticallyImplyLeading: true,
+        leading: IconButton(
+          onPressed: () => Navigator.pushReplacementNamed(context, RouteNames.loginScreen),
+          icon: const Icon(Icons.keyboard_arrow_left),
+        ),
+      ),
+      body: SafeArea(
+        child: Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 16.0),
+          child: Consumer<AnalyzingProvider>(
+            builder: (context, provider, child) {
+              if (provider.isAnalyzing) {
+                return Center(
+                  child: Image.asset(
+                    'assets/images/6.png',
+                    fit: BoxFit.cover,
+                  ),
+                );
+              }
 
-          return SafeArea(
-            child: Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 16.0),
-              child: Column(
+              if (provider.isDeepFake == true) {
+                return Center(
+                  child: Image.asset(
+                    'assets/images/deep_fake_icon.png',
+                    fit: BoxFit.cover,
+                  ),
+                );
+              }
+
+              return Column(
                 mainAxisAlignment: MainAxisAlignment.start,
                 crossAxisAlignment: CrossAxisAlignment.stretch,
                 children: [
-                  Image.asset('assets/images/intro_icon.png', width: 150.w, height: 150.h, fit: BoxFit.cover),
+                  Center(
+                    child: Image.asset(
+                      'assets/images/intro_icon.png',
+                      width: 180.w,
+                      height: 180.h,
+                      fit: BoxFit.cover,
+                    ),
+                  ),
+                  Text(
+                    'TRUESYNC',
+                    style: Theme.of(context).textTheme.titleLarge!.copyWith(color: AppColors.instance.white, fontSize: 28),
+                    textAlign: TextAlign.center,
+                  ),
+                  const SizedBox(height: 10),
                   UploadButton(onPressed: () => provider.pickVideo()),
                   const SizedBox(height: 10),
                   if (provider.isVideoSelected && provider.controller != null) ...[
@@ -48,12 +80,12 @@ class HomeScreen extends StatelessWidget {
                         alignment: Alignment.center,
                         children: [
                           SizedBox(
-                            width: MediaQuery.of(context).size.width, // 100% of the screen width
-                            height: MediaQuery.of(context).size.height * 0.3, // 3% of the screen height
+                            width: MediaQuery.of(context).size.width,
+                            height: MediaQuery.of(context).size.height * 0.3,
                             child: ClipRRect(
                               borderRadius: BorderRadius.circular(16),
                               child: FittedBox(
-                                fit: BoxFit.cover,  // Ensures it covers the area properly
+                                fit: BoxFit.cover,
                                 child: SizedBox(
                                   width: provider.controller!.value.size.width,
                                   height: provider.controller!.value.size.height,
@@ -63,7 +95,6 @@ class HomeScreen extends StatelessWidget {
                             ),
                           ),
                           if (!provider.controller!.value.isPlaying) const Icon(Icons.play_arrow, size: 50, color: Colors.white),
-                          // Close "X" button
                           Positioned(
                             top: 8,
                             right: 8,
@@ -80,7 +111,6 @@ class HomeScreen extends StatelessWidget {
                       ),
                     ),
                     const SizedBox(height: 10),
-
                     VideoProgressIndicator(
                       provider.controller!,
                       allowScrubbing: true,
@@ -91,8 +121,6 @@ class HomeScreen extends StatelessWidget {
                       ),
                     ),
                     const SizedBox(height: 10),
-
-                    // Dropdown Selection
                     Container(
                       height: 48.0,
                       padding: const EdgeInsets.symmetric(horizontal: 12.0, vertical: 4.0),
@@ -102,7 +130,7 @@ class HomeScreen extends StatelessWidget {
                         border: Border.all(color: Colors.white.withOpacity(0.3)),
                       ),
                       child: PopupMenuButton<String>(
-                        onSelected: provider.setSelectedAction,
+                        onSelected: (String action) => provider.setSelectedAction(context, action),
                         color: AppColors.instance.white,
                         itemBuilder: (context) => [
                           _buildPopupMenuItem("Presenting", Icons.present_to_all),
@@ -133,15 +161,14 @@ class HomeScreen extends StatelessWidget {
                     ),
                   ],
                 ],
-              ),
-            ),
-          );
-        },
+              );
+            },
+          ),
+        ),
       ),
     );
   }
 
-  // Helper method to create a popup menu item
   PopupMenuItem<String> _buildPopupMenuItem(String value, IconData icon) {
     return PopupMenuItem<String>(
       value: value,
