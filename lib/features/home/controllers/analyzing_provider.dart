@@ -7,7 +7,6 @@ import 'package:flutter/material.dart';
 import 'package:video_player/video_player.dart';
 
 class AnalyzingProvider with ChangeNotifier {
-
   final AnalyzingRepository _analyzingRepository;
 
   AnalyzingProvider(this._analyzingRepository);
@@ -24,15 +23,12 @@ class AnalyzingProvider with ChangeNotifier {
   bool _isAnalyzing = false;
   bool get isAnalyzing => _isAnalyzing;
 
-
-
   VideoPlayerController? get controller => _controller;
   bool get isVideoSelected => _isVideoSelected;
   String? get selectedAction => _selectedAction;
   String? get analysisMessage => _analysisMessage;
   bool? get isDeepFake => _isDeepFake;
   String get iconPath => _iconPath;
-
 
   Future<void> pickVideo() async {
     try {
@@ -64,26 +60,26 @@ class AnalyzingProvider with ChangeNotifier {
     notifyListeners();
 
     try {
-      // Directly assign the parsed JSON response
+      // Send video to API
       Map<String, dynamic> jsonResponse = await _analyzingRepository.analyzingVideo(_selectedVideo!, _selectedAction!);
 
-      Map<String, dynamic> eyeModel = jsonResponse["predictions"]["eye_model"];
-      Map<String, dynamic> lipModel = jsonResponse["predictions"]["lip_model"];
+      // The values of 'eye_model' and 'lip_model' are JSON-encoded strings; decode them first
+      Map<String, dynamic> eyeModel = jsonDecode(jsonResponse["predictions"]["eye_model"]);
+      Map<String, dynamic> lipModel = jsonDecode(jsonResponse["predictions"]["lip_model"]);
 
       double eyeFakeConfidence = eyeModel["confidence"]["Fake"];
       double lipFakeConfidence = lipModel["confidence"]["Fake"];
 
-      // Set icon based on confidence scores
-
       bool isDeepFake = (eyeFakeConfidence > 0.5 || lipFakeConfidence > 0.5);
+
       _iconPath = isDeepFake ? 'assets/images/deep_fake_icon.png' : 'assets/images/normal_icon.png';
 
       _analysisMessage = "Analysis Complete.";
       notifyListeners();
 
-      if(!context.mounted) return;
+      if (!context.mounted) return;
       if (isDeepFake) {
-        Navigator.pushNamed(context, RouteNames.normalScreen);
+        Navigator.pushNamed(context, RouteNames.deepfakeScreen);
       } else {
         Navigator.pushNamed(context, RouteNames.normalScreen);
       }
@@ -93,12 +89,11 @@ class AnalyzingProvider with ChangeNotifier {
       _analysisMessage = "Error analyzing video: $e";
       debugPrint("Error analyzing video: $e");
     }
+
     _isAnalyzing = false;
     notifyListeners();
     deselectVideo();
   }
-
-
 
   void togglePlayPause() {
     if (_controller != null) {
@@ -143,7 +138,6 @@ class AnalyzingProvider with ChangeNotifier {
     notifyListeners();
     analyzeVideo(context);
   }
-
 
   void deselectVideo() {
     _controller?.dispose();

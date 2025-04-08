@@ -20,7 +20,6 @@ final kFormFieldDecoration = InputDecoration(
     borderRadius: BorderRadius.all(Radius.circular(24.4)),
     borderSide: BorderSide(color: AppColors.instance.darkNavy),
   ),
-
   focusedErrorBorder: OutlineInputBorder(
     borderRadius: BorderRadius.all(Radius.circular(24.4)),
     borderSide: BorderSide(color: AppColors.instance.darkNavy),

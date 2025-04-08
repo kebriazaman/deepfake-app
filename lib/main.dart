@@ -23,7 +23,7 @@ class MyApp extends StatelessWidget {
         designSize: const Size(375, 812),
         builder: (context, child) {
           return MaterialApp(
-            debugShowCheckedModeBanner: true,
+            debugShowCheckedModeBanner: false,
             title: 'DeepSeek',
             theme: AppTheme.darkTheme,
             onGenerateRoute: AppRoutes.instance.generateRoute,
