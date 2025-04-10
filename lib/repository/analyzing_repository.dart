@@ -28,6 +28,8 @@ class AnalyzingRepository {
       } else {
         throw Exception('Failed to analyze video: ${response.statusCode}');
       }
+    } on SocketException catch (e) {
+      throw Exception(e.message);
     } catch (e) {
       throw Exception('Error analyzing video: $e');
     }

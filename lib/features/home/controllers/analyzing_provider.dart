@@ -2,6 +2,7 @@ import 'dart:convert';
 import 'dart:io';
 import 'package:deepfake/repository/analyzing_repository.dart';
 import 'package:deepfake/resources/routes/route_names.dart';
+import 'package:deepfake/utils/utils.dart';
 import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
 import 'package:video_player/video_player.dart';
@@ -63,21 +64,22 @@ class AnalyzingProvider with ChangeNotifier {
       // Send video to API
       Map<String, dynamic> jsonResponse = await _analyzingRepository.analyzingVideo(_selectedVideo!, _selectedAction!);
 
-      // The values of 'eye_model' and 'lip_model' are JSON-encoded strings; decode them first
+      // Decode the JSON-encoded prediction strings
       Map<String, dynamic> eyeModel = jsonDecode(jsonResponse["predictions"]["eye_model"]);
       Map<String, dynamic> lipModel = jsonDecode(jsonResponse["predictions"]["lip_model"]);
 
-      double eyeFakeConfidence = eyeModel["confidence"]["Fake"];
-      double lipFakeConfidence = lipModel["confidence"]["Fake"];
+      // Only check the prediction values now
+      String eyePrediction = eyeModel["prediction"];
+      String lipPrediction = lipModel["prediction"];
 
-      bool isDeepFake = (eyeFakeConfidence > 0.5 || lipFakeConfidence > 0.5);
+      bool isDeepFake = eyePrediction == "Fake" || lipPrediction == "Fake";
 
       _iconPath = isDeepFake ? 'assets/images/deep_fake_icon.png' : 'assets/images/normal_icon.png';
-
       _analysisMessage = "Analysis Complete.";
       notifyListeners();
 
       if (!context.mounted) return;
+
       if (isDeepFake) {
         Navigator.pushNamed(context, RouteNames.deepfakeScreen);
       } else {
@@ -87,6 +89,7 @@ class AnalyzingProvider with ChangeNotifier {
       debugPrint("Video analysis request sent successfully.");
     } catch (e) {
       _analysisMessage = "Error analyzing video: $e";
+      Utils.instance.showSnakeBar(context: context, title: e.toString());
       debugPrint("Error analyzing video: $e");
     }
 

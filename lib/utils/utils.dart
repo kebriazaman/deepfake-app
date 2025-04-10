@@ -1,6 +1,22 @@
+import 'package:deepfake/resources/colors/app_colors.dart';
+import 'package:flutter/material.dart';
+
 class Utils {
   Utils._();
   static final Utils instance = Utils._();
+
+  void showSnakeBar({required BuildContext context, required String title}) {
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(
+        content: Text(
+          title ?? '---',
+          style: Theme.of(context).textTheme.bodyMedium!.copyWith(color: AppColors.instance.black),
+        ),
+        backgroundColor: AppColors.instance.white,
+        duration: const Duration(seconds: 3),
+      ),
+    );
+  }
 
   static String? validateEmail(String? value) {
     String pattern = r'^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$';
