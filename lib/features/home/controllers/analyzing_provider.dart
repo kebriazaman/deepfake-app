@@ -22,6 +22,8 @@ class AnalyzingProvider with ChangeNotifier {
   bool? _isDeepFake;
   String _iconPath = 'assets/images/normal_icon.png';
   bool _isAnalyzing = false;
+  double? _eyeConfidence;
+  double? _lipConfidence;
   bool get isAnalyzing => _isAnalyzing;
 
   VideoPlayerController? get controller => _controller;
@@ -30,6 +32,9 @@ class AnalyzingProvider with ChangeNotifier {
   String? get analysisMessage => _analysisMessage;
   bool? get isDeepFake => _isDeepFake;
   String get iconPath => _iconPath;
+
+  double? get eyeConfidence => _eyeConfidence;
+  double? get lipConfidence => _lipConfidence;
 
   Future<void> pickVideo() async {
     try {
@@ -71,6 +76,9 @@ class AnalyzingProvider with ChangeNotifier {
       // Only check the prediction values now
       String eyePrediction = eyeModel["prediction"];
       String lipPrediction = lipModel["prediction"];
+
+      _eyeConfidence = (eyeModel["confidence"][eyePrediction] * 100);
+      _lipConfidence = (lipModel["confidence"][lipPrediction] * 100);
 
       bool isDeepFake = eyePrediction == "Fake" || lipPrediction == "Fake";
 

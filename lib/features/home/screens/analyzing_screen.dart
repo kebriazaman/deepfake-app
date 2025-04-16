@@ -56,13 +56,16 @@ class HomeScreen extends StatelessWidget {
                       fit: BoxFit.cover,
                     ),
                   ),
-                  Text(
-                    'TRUESYNC',
-                    style: Theme.of(context).textTheme.titleLarge!.copyWith(color: AppColors.instance.white, fontSize: 28),
-                    textAlign: TextAlign.center,
-                  ),
+                  // Text(
+                  //   'TRUESYNC',
+                  //   style: Theme.of(context).textTheme.titleLarge!.copyWith(color: AppColors.instance.white, fontSize: 28),
+                  //   textAlign: TextAlign.center,
+                  // ),
                   const SizedBox(height: 10),
-                  UploadButton(onPressed: () => provider.pickVideo()),
+                  UploadButton(onPressed: () {
+                    // provider.pickVideo();
+                    Navigator.pushNamed(context, RouteNames.normalScreen);
+                  }),
                   const SizedBox(height: 10),
                   if (provider.isVideoSelected && provider.controller != null) ...[
                     Text(
@@ -70,7 +73,7 @@ class HomeScreen extends StatelessWidget {
                       style: Theme.of(context).textTheme.bodyMedium!.copyWith(
                             fontWeight: FontWeight.w600,
                             overflow: TextOverflow.ellipsis,
-                            color: AppColors.instance.white.withAlpha(400),
+                            color: AppColors.instance.white,
                           ),
                     ),
                     const SizedBox(height: 10),
