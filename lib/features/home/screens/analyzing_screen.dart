@@ -62,10 +62,7 @@ class HomeScreen extends StatelessWidget {
                   //   textAlign: TextAlign.center,
                   // ),
                   const SizedBox(height: 10),
-                  UploadButton(onPressed: () {
-                    // provider.pickVideo();
-                    Navigator.pushNamed(context, RouteNames.normalScreen);
-                  }),
+                  UploadButton(onPressed: () => provider.pickVideo()),
                   const SizedBox(height: 10),
                   if (provider.isVideoSelected && provider.controller != null) ...[
                     Text(
