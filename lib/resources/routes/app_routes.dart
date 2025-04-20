@@ -1,4 +1,5 @@
 import 'package:deepfake/features/auth/screens/login_screen.dart';
+import 'package:deepfake/features/auth/screens/signup_screen.dart';
 import 'package:deepfake/features/home/screens/analyzing_screen.dart';
 import 'package:deepfake/features/auth/screens/splash_screen.dart';
 import 'package:deepfake/features/home/screens/deepfake_video_screen.dart';
@@ -22,10 +23,19 @@ class AppRoutes {
         return MaterialPageRoute(builder: (context) => LoginScreen());
 
       case RouteNames.deepfakeScreen:
-        return MaterialPageRoute(builder: (context) => DeepfakeVideoScreen());
-
+        final args = settings.arguments as Map<String, dynamic>;
+        return MaterialPageRoute(
+          builder: (context) => DeepfakeVideoScreen(
+            eyeConf: args['eyeConf'],
+            lipConf: args['lipConf'],
+          ),
+        );
       case RouteNames.normalScreen:
-        return MaterialPageRoute(builder: (context) => NormalVideoScreen());
+        final args = settings.arguments as Map<String, dynamic>;
+        return MaterialPageRoute(builder: (context) => NormalVideoScreen(
+          eyeConf: args['eyeConf'],
+          lipConf: args['lipConf'],
+        ));
 
 
       default:

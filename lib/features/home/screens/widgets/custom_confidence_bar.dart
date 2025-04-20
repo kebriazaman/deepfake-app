@@ -11,7 +11,7 @@ class CustomConfidenceBar extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final double position = (1 - (confidence / 100)).clamp(0.0, 1.0);
+    final double position = (confidence / 100).clamp(0.0, 1.0);
       return Column(
       mainAxisSize: MainAxisSize.min,
       children: [
@@ -42,8 +42,11 @@ class CustomConfidenceBar extends StatelessWidget {
                       decoration: BoxDecoration(
                         borderRadius: BorderRadius.circular(20.r),
                         gradient: const LinearGradient(
+                          begin: Alignment.centerLeft,
+                          end: Alignment.centerRight,
                           colors: [Colors.lightBlueAccent, Colors.redAccent],
                         ),
+
                       ),
                     ),
                   ),

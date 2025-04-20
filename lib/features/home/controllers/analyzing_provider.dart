@@ -13,6 +13,8 @@ class AnalyzingProvider with ChangeNotifier {
   AnalyzingProvider(this._analyzingRepository);
 
   VideoPlayerController? _controller;
+
+  String? _fakeSourceModel;
   File? _selectedVideo;
   bool _isVideoSelected = false;
   bool _isPlaying = false;
@@ -33,6 +35,7 @@ class AnalyzingProvider with ChangeNotifier {
   bool? get isDeepFake => _isDeepFake;
   String get iconPath => _iconPath;
 
+  String? get fakeSourceModel => _fakeSourceModel;
   double? get eyeConfidence => _eyeConfidence;
   double? get lipConfidence => _lipConfidence;
 
@@ -67,31 +70,55 @@ class AnalyzingProvider with ChangeNotifier {
 
     try {
       // Send video to API
-      Map<String, dynamic> jsonResponse = await _analyzingRepository.analyzingVideo(_selectedVideo!, _selectedAction!);
+      Map<String, dynamic> jsonResponse = await _analyzingRepository.analyzingVideo(
+        _selectedVideo!,
+        _selectedAction!,
+      );
 
-      // Decode the JSON-encoded prediction strings
       Map<String, dynamic> eyeModel = jsonDecode(jsonResponse["predictions"]["eye_model"]);
       Map<String, dynamic> lipModel = jsonDecode(jsonResponse["predictions"]["lip_model"]);
 
-      // Only check the prediction values now
       String eyePrediction = eyeModel["prediction"];
       String lipPrediction = lipModel["prediction"];
 
-      _eyeConfidence = (eyeModel["confidence"][eyePrediction] * 100);
-      _lipConfidence = (lipModel["confidence"][lipPrediction] * 100);
+      if (eyePrediction == 'Fake') {
+        _eyeConfidence = (eyeModel['confidence']['Fake'] * 100);
+        _lipConfidence = (eyeModel['confidence']['Real'] * 100);
+        _isDeepFake = true;
+      } else if ( lipPrediction == 'Fake' ) {
+        _eyeConfidence = (lipModel['confidence']['Fake'] * 100);
+        _lipConfidence = (lipModel['confidence']['Real'] * 100);
+        _isDeepFake = true;
+      } else {
+        _eyeConfidence = (eyeModel['confidence']['Real'] * 100);
+        _lipConfidence = (lipModel['confidence']['Real'] * 100);
+        _isDeepFake = false;
+      }
 
-      bool isDeepFake = eyePrediction == "Fake" || lipPrediction == "Fake";
+      double eyeConf = _eyeConfidence ?? 0.0;
+      double lipConf = _lipConfidence ?? 0.0;
 
-      _iconPath = isDeepFake ? 'assets/images/deep_fake_icon.png' : 'assets/images/normal_icon.png';
+      _iconPath = isDeepFake == true ? 'assets/images/deep_fake_icon.png' : 'assets/images/normal_icon.png';
+
       _analysisMessage = "Analysis Complete.";
       notifyListeners();
 
       if (!context.mounted) return;
 
-      if (isDeepFake) {
-        Navigator.pushNamed(context, RouteNames.deepfakeScreen);
+      if (isDeepFake == true) {
+        Navigator.pushNamed(context, RouteNames.deepfakeScreen, arguments: {
+          'eyeConf': eyeConf,
+          'lipConf': lipConf,
+        });
       } else {
-        Navigator.pushNamed(context, RouteNames.normalScreen);
+        Navigator.pushNamed(
+          context,
+          RouteNames.normalScreen,
+          arguments: {
+            'eyeConf': eyeConf,
+            'lipConf': lipConf,
+          },
+        );
       }
 
       debugPrint("Video analysis request sent successfully.");

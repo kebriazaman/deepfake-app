@@ -8,29 +8,35 @@ import 'package:provider/provider.dart';
 
 import '../controllers/auth_controller.dart';
 
-class LoginScreen extends StatefulWidget {
-  const LoginScreen({super.key});
+class SignupScreen extends StatefulWidget {
+  const SignupScreen({super.key});
 
   @override
-  State<LoginScreen> createState() => _LoginScreenState();
+  State<SignupScreen> createState() => _SignupScreenState();
 }
 
-class _LoginScreenState extends State<LoginScreen> {
-  late final TextEditingController usernameController, passwordController;
-
+class _SignupScreenState extends State<SignupScreen> {
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
+  late final TextEditingController usernameController;
+  late final TextEditingController emailController;
+  late final TextEditingController passwordController;
+  late final TextEditingController confirmPasswordController;
 
   @override
   void initState() {
     super.initState();
     usernameController = TextEditingController();
+    emailController = TextEditingController();
     passwordController = TextEditingController();
+    confirmPasswordController = TextEditingController();
   }
 
   @override
   void dispose() {
     usernameController.dispose();
+    emailController.dispose();
     passwordController.dispose();
+    confirmPasswordController.dispose();
     super.dispose();
   }
 
@@ -48,46 +54,67 @@ class _LoginScreenState extends State<LoginScreen> {
                 children: [
                   Image.asset('assets/images/intro_icon.png', fit: BoxFit.cover),
                   Text('TRUESYNC', style: Theme.of(context).textTheme.titleLarge!.copyWith(color: AppColors.instance.white, fontSize: 30)),
-                  SizedBox(height: 10),
-
+                  const SizedBox(height: 10),
                   CustomTextFormField(
                     controller: usernameController,
                     hintText: 'Username',
                     keyboardType: TextInputType.name,
                     textInputAction: TextInputAction.next,
                     isPasswordVisible: false,
-                    validator: (v) => v == null || v.isEmpty ? 'Invalid username' : null,
+                    validator: (v) => v == null || v.isEmpty ? 'Username is required' : null,
                   ),
-
+                  const SizedBox(height: 10),
+                  CustomTextFormField(
+                    controller: emailController,
+                    hintText: 'Email',
+                    keyboardType: TextInputType.emailAddress,
+                    textInputAction: TextInputAction.next,
+                    isPasswordVisible: false,
+                    validator: (v) => v == null || !v.contains('@') ? 'Enter a valid email' : null,
+                  ),
                   const SizedBox(height: 10),
                   CustomTextFormField(
                     controller: passwordController,
                     hintText: 'Password',
                     keyboardType: TextInputType.visiblePassword,
+                    textInputAction: TextInputAction.next,
+                    isPasswordVisible: true,
+                    validator: (v) => v == null || v.length < 6 ? 'Password must be at least 6 characters' : null,
+                  ),
+                  const SizedBox(height: 10),
+                  CustomTextFormField(
+                    controller: confirmPasswordController,
+                    hintText: 'Confirm Password',
+                    keyboardType: TextInputType.visiblePassword,
                     textInputAction: TextInputAction.done,
                     isPasswordVisible: true,
-                    validator: (v) => v == null || v.isEmpty ? 'Invalid password' : null,
+                    validator: (v) => v != passwordController.text ? 'Passwords do not match' : null,
                   ),
-
                   const SizedBox(height: 20),
 
+
                   Selector<AuthController, bool>(
-                    selector: (_, authController) => authController.isLogin,
-                    builder: (context, isLoginLoading, _) {
+                    selector: (_, authController) => authController.isSigningUp,
+                    builder: (context, isSigningUp, _) {
                       return CustomAppButton(
-                        title: 'LOGIN',
+                        title: 'SIGNUP',
                         textColor: AppColors.instance.white,
                         backgroundColor: AppColors.instance.buttonBackgroundColor,
-                        isLoading: isLoginLoading,
-                        onTap: () async {
+                        isLoading: isSigningUp,
+                        onTap:  () async {
                           if (_formKey.currentState!.validate()) {
                             final authController = context.read<AuthController>();
-                            final success =
-                                await authController.login(context: context, username: usernameController.text.trim(), password: passwordController.text.trim());
+                            final success = await authController.signup(
+                              context: context,
+                              username: usernameController.text.trim(),
+                              email: emailController.text.trim(),
+                              password: passwordController.text.trim(),
+                              confirmPassword: confirmPasswordController.text.trim(),
+                            );
 
                             if (success) {
                               if(!context.mounted) return;
-                              Navigator.pushReplacementNamed(context, RouteNames.homeScreen);
+                              Navigator.pushReplacementNamed(context, RouteNames.loginScreen);
                             }
                           }
                         },
@@ -95,39 +122,26 @@ class _LoginScreenState extends State<LoginScreen> {
                     },
                   ),
 
-                  SizedBox(height: 10),
+                  const SizedBox(height: 10),
                   RichText(
                     text: TextSpan(
-                      text: 'Don\'t have an account? ',
+                      text: 'Already have an account? ',
                       style: Theme.of(context).textTheme.bodyMedium!.copyWith(color: AppColors.instance.white),
                       children: [
                         TextSpan(
-                          text: 'Signup',
-                          style: Theme.of(context).textTheme.bodyMedium!.copyWith(color: AppColors.instance.white, decoration: TextDecoration.underline),
+                          text: 'Login',
+                          style: Theme.of(context).textTheme.bodyMedium!.copyWith(
+                                color: AppColors.instance.white,
+                                decoration: TextDecoration.underline,
+                              ),
                           recognizer: TapGestureRecognizer()
                             ..onTap = () {
-                              Navigator.pushNamed(context, RouteNames.signupScreen);
+                              Navigator.pop(context);
                             },
                         ),
                       ],
                     ),
                   ),
-
-                  // Selector<AuthController, bool>(
-                  //   selector: (context, authController) => authController.isPasswordToggled,
-                  //   builder: (context, isVisible, __) {
-                  //     return CustomTextFormField(
-                  //       controller: passwordController,
-                  //       hintText: 'Password',
-                  //       keyboardType: TextInputType.visiblePassword,
-                  //       textInputAction: TextInputAction.done,
-                  //       onPressed: () => context.read<AuthController>().setPasswordToggled(),
-                  //       isPasswordVisible: !context.read<AuthController>().isPasswordToggled,
-                  //       // validator: (v) => Utility.validatePassword(v),
-                  //       validator: (v) => v == null ? 'Password is required' : null,
-                  //     );
-                  //   },
-                  // ),
                 ],
               ),
             ),

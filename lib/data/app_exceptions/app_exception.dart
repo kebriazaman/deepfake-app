@@ -49,4 +49,10 @@ class BadGatewayException extends AppException {
   BadGatewayException(String message) : super('', details: message);
 }
 
+class UnAuthorizedUserException extends AppException {
+  UnAuthorizedUserException(String message) : super('', details: message);
+}
+
+
+
 

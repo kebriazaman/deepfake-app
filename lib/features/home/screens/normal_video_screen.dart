@@ -8,7 +8,9 @@ import 'package:provider/provider.dart';
 import '../controllers/analyzing_provider.dart';
 
 class NormalVideoScreen extends StatefulWidget {
-  const NormalVideoScreen({super.key});
+  final double? eyeConf;
+  final double? lipConf;
+  const NormalVideoScreen({super.key, this.eyeConf, this.lipConf});
 
   @override
   State<NormalVideoScreen> createState() => _NormalVideoScreenState();
@@ -19,9 +21,6 @@ class _NormalVideoScreenState extends State<NormalVideoScreen> {
 
   @override
   Widget build(BuildContext context) {
-
-    final lipConfidence = context.read<AnalyzingProvider>().lipConfidence ?? 0.0;
-    final eyeConfidence = context.read<AnalyzingProvider>().eyeConfidence ?? 0.0;
 
     return Scaffold(
       backgroundColor: Colors.black,
@@ -42,7 +41,8 @@ class _NormalVideoScreenState extends State<NormalVideoScreen> {
                 'assets/images/real_video_icon.png',
                 fit: BoxFit.cover,
               ),
-              CustomConfidenceBar(confidence: lipConfidence),
+
+              CustomConfidenceBar(confidence: widget.lipConf ?? 0.0),
 
               SizedBox(height: 20.h),
 
@@ -67,7 +67,7 @@ class _NormalVideoScreenState extends State<NormalVideoScreen> {
                 Row(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
-                    CustomRoundedConfidenceContainer(text: '${lipConfidence.toStringAsFixed(2)}%'),
+                    CustomRoundedConfidenceContainer(text: '${widget.lipConf!.toStringAsFixed(2)}%'),
                     SizedBox(width: 20.w),
                     Column(
                       children: [
@@ -89,7 +89,7 @@ class _NormalVideoScreenState extends State<NormalVideoScreen> {
                 Row(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
-                    CustomRoundedConfidenceContainer(text: '${eyeConfidence.toStringAsFixed(2)}%'),
+                    CustomRoundedConfidenceContainer(text: '${widget.eyeConf!.toStringAsFixed(2)}%'),
                     SizedBox(width: 20.w),
                     Column(
                       children: [
