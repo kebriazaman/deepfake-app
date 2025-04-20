@@ -11,7 +11,8 @@ class CustomConfidenceBar extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final double position = (confidence / 100).clamp(0.0, 1.0);
+    log(confidence.toString(), name: 'bar conf');
+    final double position = ((100 - confidence) / 100).clamp(0.0, 1.0);
       return Column(
       mainAxisSize: MainAxisSize.min,
       children: [

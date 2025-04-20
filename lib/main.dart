@@ -2,6 +2,7 @@ import 'package:deepfake/features/home/controllers/analyzing_provider.dart';
 import 'package:deepfake/features/auth/controllers/auth_controller.dart';
 import 'package:deepfake/repository/analyzing_repository.dart';
 import 'package:deepfake/resources/routes/app_routes.dart';
+import 'package:deepfake/resources/routes/route_names.dart';
 import 'package:deepfake/resources/theme/app_theme.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
@@ -26,6 +27,7 @@ class MyApp extends StatelessWidget {
             debugShowCheckedModeBanner: false,
             title: 'DeepSeek',
             theme: AppTheme.darkTheme,
+            initialRoute: RouteNames.splashScreen,
             onGenerateRoute: AppRoutes.instance.generateRoute,
           );
         },

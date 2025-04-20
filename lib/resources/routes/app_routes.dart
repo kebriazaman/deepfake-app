@@ -13,38 +13,52 @@ class AppRoutes {
   static final AppRoutes instance = AppRoutes._();
 
   Route<dynamic> generateRoute(RouteSettings settings) {
+
     switch (settings.name) {
       case RouteNames.splashScreen:
-        return MaterialPageRoute(builder: (context) => SplashScreen());
+        return MaterialPageRoute(builder: (_) => SplashScreen());
+
       case RouteNames.homeScreen:
-        return MaterialPageRoute(builder: (context) => HomeScreen());
+        return MaterialPageRoute(builder: (_) => HomeScreen());
 
       case RouteNames.loginScreen:
-        return MaterialPageRoute(builder: (context) => LoginScreen());
+        return MaterialPageRoute(builder: (_) => LoginScreen());
+
+      case RouteNames.signupScreen:
+        return MaterialPageRoute(builder: (_) => SignupScreen());
+
 
       case RouteNames.deepfakeScreen:
-        final args = settings.arguments as Map<String, dynamic>;
+        final args = settings.arguments as Map<String, dynamic>?;
         return MaterialPageRoute(
-          builder: (context) => DeepfakeVideoScreen(
-            eyeConf: args['eyeConf'],
-            lipConf: args['lipConf'],
+          builder: (_) => DeepfakeVideoScreen(
+            eyeConf: args?['eyeConf'],
+            lipConf: args?['lipConf'],
           ),
         );
-      case RouteNames.normalScreen:
-        final args = settings.arguments as Map<String, dynamic>;
-        return MaterialPageRoute(builder: (context) => NormalVideoScreen(
-          eyeConf: args['eyeConf'],
-          lipConf: args['lipConf'],
-        ));
 
+      case RouteNames.normalScreen:
+        final args = settings.arguments as Map<String, dynamic>?;
+        return MaterialPageRoute(
+          builder: (_) => NormalVideoScreen(
+            eyeConf: args?['eyeConf'],
+            lipConf: args?['lipConf'],
+          ),
+        );
+
+    // Optional: Add a default fallback for `null` route
+      case null:
+      case '/':
+        return MaterialPageRoute(builder: (_) => SplashScreen());
 
       default:
         return MaterialPageRoute(
-            builder: (context) => Scaffold(
-                  body: Center(
-                    child: Text('No Screen defined'),
-                  ),
-                ));
+          builder: (_) => Scaffold(
+            body: Center(
+              child: Text('No screen defined for ${settings.name}'),
+            ),
+          ),
+        );
     }
   }
 }

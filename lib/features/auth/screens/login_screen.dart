@@ -112,22 +112,6 @@ class _LoginScreenState extends State<LoginScreen> {
                       ],
                     ),
                   ),
-
-                  // Selector<AuthController, bool>(
-                  //   selector: (context, authController) => authController.isPasswordToggled,
-                  //   builder: (context, isVisible, __) {
-                  //     return CustomTextFormField(
-                  //       controller: passwordController,
-                  //       hintText: 'Password',
-                  //       keyboardType: TextInputType.visiblePassword,
-                  //       textInputAction: TextInputAction.done,
-                  //       onPressed: () => context.read<AuthController>().setPasswordToggled(),
-                  //       isPasswordVisible: !context.read<AuthController>().isPasswordToggled,
-                  //       // validator: (v) => Utility.validatePassword(v),
-                  //       validator: (v) => v == null ? 'Password is required' : null,
-                  //     );
-                  //   },
-                  // ),
                 ],
               ),
             ),

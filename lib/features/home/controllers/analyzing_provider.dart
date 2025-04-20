@@ -58,6 +58,7 @@ class AnalyzingProvider with ChangeNotifier {
   }
 
   Future<void> analyzeVideo(BuildContext context) async {
+
     if (_selectedVideo == null || _selectedAction == null) {
       _analysisMessage = "Error: Please select both a video and an action before analyzing.";
       notifyListeners();
@@ -67,6 +68,13 @@ class AnalyzingProvider with ChangeNotifier {
 
     _isAnalyzing = true;
     notifyListeners();
+
+
+    double fakeLipConf = 0.0;
+    double fakeEyeConf = 0.0;
+
+    double realLipConf = 0.0;
+    double realEyeConf = 0.0;
 
     try {
       // Send video to API
@@ -82,21 +90,19 @@ class AnalyzingProvider with ChangeNotifier {
       String lipPrediction = lipModel["prediction"];
 
       if (eyePrediction == 'Fake') {
-        _eyeConfidence = (eyeModel['confidence']['Fake'] * 100);
-        _lipConfidence = (eyeModel['confidence']['Real'] * 100);
+        fakeEyeConf = (eyeModel['confidence']['Fake'] * 100);
+        fakeLipConf = (lipModel['confidence']['Fake'] * 100);
         _isDeepFake = true;
       } else if ( lipPrediction == 'Fake' ) {
-        _eyeConfidence = (lipModel['confidence']['Fake'] * 100);
-        _lipConfidence = (lipModel['confidence']['Real'] * 100);
+        fakeEyeConf = (eyeModel['confidence']['Fake'] * 100);
+        fakeLipConf = (lipModel['confidence']['Fake'] * 100);
         _isDeepFake = true;
       } else {
-        _eyeConfidence = (eyeModel['confidence']['Real'] * 100);
-        _lipConfidence = (lipModel['confidence']['Real'] * 100);
+        realEyeConf = (eyeModel['confidence']['Real'] * 100);
+        realLipConf = (lipModel['confidence']['Real'] * 100);
         _isDeepFake = false;
       }
 
-      double eyeConf = _eyeConfidence ?? 0.0;
-      double lipConf = _lipConfidence ?? 0.0;
 
       _iconPath = isDeepFake == true ? 'assets/images/deep_fake_icon.png' : 'assets/images/normal_icon.png';
 
@@ -107,16 +113,16 @@ class AnalyzingProvider with ChangeNotifier {
 
       if (isDeepFake == true) {
         Navigator.pushNamed(context, RouteNames.deepfakeScreen, arguments: {
-          'eyeConf': eyeConf,
-          'lipConf': lipConf,
+          'eyeConf': fakeEyeConf,
+          'lipConf': fakeLipConf,
         });
       } else {
         Navigator.pushNamed(
           context,
           RouteNames.normalScreen,
           arguments: {
-            'eyeConf': eyeConf,
-            'lipConf': lipConf,
+            'eyeConf': realEyeConf,
+            'lipConf': realLipConf,
           },
         );
       }

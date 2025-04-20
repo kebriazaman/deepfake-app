@@ -22,6 +22,8 @@ class _DeepfakeVideoScreenState extends State<DeepfakeVideoScreen> {
 
   @override
   Widget build(BuildContext context) {
+    log(widget.eyeConf.toString(), name: 'eye conf');
+    log(widget.lipConf.toString(), name: 'lip conf');
     // final provider = context.read<AnalyzingProvider>();
     // final lipConfidence = provider.lipConfidence ?? 90.0;
     // final eyeConfidence = provider.eyeConfidence ?? 0.0;
@@ -48,7 +50,9 @@ class _DeepfakeVideoScreenState extends State<DeepfakeVideoScreen> {
                 'assets/images/deep_fake_video_icon.png',
                 fit: BoxFit.cover,
               ),
-              CustomConfidenceBar(confidence: widget.eyeConf ?? 0.0),
+              CustomConfidenceBar(
+                confidence: (widget.eyeConf ?? 0).compareTo(widget.lipConf ?? 0) < 0 ? (widget.eyeConf ?? 0) : (widget.lipConf ?? 0),
+              ),
               SizedBox(height: 20.h),
               InkWell(
                 onTap: () {
@@ -85,7 +89,7 @@ class _DeepfakeVideoScreenState extends State<DeepfakeVideoScreen> {
                         ),
                       ],
                     ),
-                ],
+                  ],
                 ),
                 SizedBox(height: 20.h),
                 Row(

@@ -51,16 +51,14 @@ class HomeScreen extends StatelessWidget {
                   Center(
                     child: Image.asset(
                       'assets/images/intro_icon.png',
-                      width: 180.w,
-                      height: 180.h,
                       fit: BoxFit.cover,
                     ),
                   ),
-                  // Text(
-                  //   'TRUESYNC',
-                  //   style: Theme.of(context).textTheme.titleLarge!.copyWith(color: AppColors.instance.white, fontSize: 28),
-                  //   textAlign: TextAlign.center,
-                  // ),
+                  Text(
+                    'TRUESYNC',
+                    style: Theme.of(context).textTheme.titleLarge!.copyWith(color: AppColors.instance.white, fontSize: 28),
+                    textAlign: TextAlign.center,
+                  ),
                   const SizedBox(height: 10),
                   UploadButton(onPressed: () => provider.pickVideo()),
                   const SizedBox(height: 10),
