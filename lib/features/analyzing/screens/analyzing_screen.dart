@@ -1,11 +1,12 @@
 import 'package:deepfake/common/upload_button.dart';
-import 'package:deepfake/features/home/controllers/analyzing_provider.dart';
 import 'package:deepfake/resources/colors/app_colors.dart';
 import 'package:deepfake/resources/routes/route_names.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:provider/provider.dart';
 import 'package:video_player/video_player.dart';
+
+import '../controllers/analyzing_provider.dart';
 
 class HomeScreen extends StatelessWidget {
   const HomeScreen({super.key});
@@ -62,6 +63,7 @@ class HomeScreen extends StatelessWidget {
                   const SizedBox(height: 10),
                   UploadButton(onPressed: () => provider.pickVideo()),
                   const SizedBox(height: 10),
+
                   if (provider.isVideoSelected && provider.controller != null) ...[
                     Text(
                       'VIDEO UPLOADED:',
@@ -158,6 +160,7 @@ class HomeScreen extends StatelessWidget {
                       ),
                     ),
                   ],
+
                 ],
               );
             },

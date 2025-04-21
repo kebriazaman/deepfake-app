@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import '../../resources/colors/app_colors.dart';
+
 final kFormFieldDecoration = InputDecoration(
   fillColor: AppColors.instance.white,
   filled: true,

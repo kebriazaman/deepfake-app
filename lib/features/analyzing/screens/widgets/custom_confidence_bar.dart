@@ -5,15 +5,21 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
 class CustomConfidenceBar extends StatelessWidget {
-  final double confidence; // from 0 (fake) to 1 (real)
+  final double confidence;
+  final bool isFake;
 
-  const CustomConfidenceBar({super.key, required this.confidence});
+  const CustomConfidenceBar({
+    super.key,
+    required this.confidence,
+      this.isFake = false,
+  });
 
   @override
   Widget build(BuildContext context) {
-    log(confidence.toString(), name: 'bar conf');
-    final double position = ((100 - confidence) / 100).clamp(0.0, 1.0);
-      return Column(
+    final double position = isFake
+        ? (confidence / 100).clamp(0.0, 1.0)
+        : ((100 - confidence) / 100).clamp(0.0, 1.0);
+    return Column(
       mainAxisSize: MainAxisSize.min,
       children: [
         LayoutBuilder(
@@ -24,16 +30,14 @@ class CustomConfidenceBar extends StatelessWidget {
             final double stackHeight = barHeight + (iconSize / 2);
             final double barWidth = constraints.maxWidth - (barMargin * 4);
             final double rawX = barMargin + (position * barWidth) - (iconSize / 2);
-
-            // Clamp the position of the arrow so that it stays within bounds
-            final double arrowX = rawX.clamp(barMargin - (iconSize / 3), barMargin + barWidth - (iconSize/2)) + 5;
+            final double arrowX = rawX.clamp(barMargin - (iconSize / 3), barMargin + barWidth - (iconSize / 2)) + 5;
             final double arrowY = (stackHeight - barHeight) / 2.5 - (iconSize / 2);
 
             return SizedBox(
               height: stackHeight,
               child: Stack(
                 children: [
-                  // Bar
+                  // Gradient bar
                   Positioned(
                     top: (stackHeight - barHeight) / 2,
                     left: barMargin,
@@ -47,11 +51,9 @@ class CustomConfidenceBar extends StatelessWidget {
                           end: Alignment.centerRight,
                           colors: [Colors.lightBlueAccent, Colors.redAccent],
                         ),
-
                       ),
                     ),
                   ),
-
                   // Arrow
                   Positioned(
                     top: arrowY,
@@ -72,24 +74,20 @@ class CustomConfidenceBar extends StatelessWidget {
           child: Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
-              Text(
-                "100%",
-                style: TextStyle(
-                  fontWeight: FontWeight.bold,
-                  color: Colors.white,
-                  fontStyle: FontStyle.italic,
-                  fontSize: 14.sp,
-                ),
-              ),
-              Text(
-                "0%",
-                style: TextStyle(
-                  fontWeight: FontWeight.bold,
-                  color: Colors.white,
-                  fontStyle: FontStyle.italic,
-                  fontSize: 14.sp,
-                ),
-              ),
+              Text("100%",
+                  style: TextStyle(
+                    fontWeight: FontWeight.bold,
+                    color: Colors.white,
+                    fontStyle: FontStyle.italic,
+                    fontSize: 14.sp,
+                  )),
+              Text("0%",
+                  style: TextStyle(
+                    fontWeight: FontWeight.bold,
+                    color: Colors.white,
+                    fontStyle: FontStyle.italic,
+                    fontSize: 14.sp,
+                  )),
             ],
           ),
         ),

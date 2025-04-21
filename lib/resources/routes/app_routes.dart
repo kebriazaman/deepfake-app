@@ -1,14 +1,14 @@
 import 'package:deepfake/features/auth/screens/login_screen.dart';
 import 'package:deepfake/features/auth/screens/signup_screen.dart';
-import 'package:deepfake/features/home/screens/analyzing_screen.dart';
 import 'package:deepfake/features/auth/screens/splash_screen.dart';
-import 'package:deepfake/features/home/screens/deepfake_video_screen.dart';
-import 'package:deepfake/features/home/screens/normal_video_screen.dart';
 import 'package:deepfake/resources/routes/route_names.dart';
 import 'package:flutter/material.dart';
 
-class AppRoutes {
+import '../../features/analyzing/screens/analyzing_screen.dart';
+import '../../features/analyzing/screens/deepfake_video_screen.dart';
+import '../../features/analyzing/screens/normal_video_screen.dart';
 
+class AppRoutes {
   AppRoutes._();
   static final AppRoutes instance = AppRoutes._();
 
